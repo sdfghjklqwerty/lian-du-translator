@@ -4087,15 +4087,20 @@ overflow-wrap: anywhere !important;`;
           return Array.from(node.childNodes, traverse).join("");
         }
 
-        if (this.#isIgnoredElement(node)) {
-          return "";
-        }
-
         let matchesKeepSelector = false;
         try {
           matchesKeepSelector = node.matches(this.#rule.keepSelector);
         } catch (err) {
           kissLog("keepSelector match error", this.#rule.keepSelector, err);
+        }
+
+        if (this.#isIgnoredElement(node)) {
+          // Inline filenames often carry translate="no". Preserve them in
+          // the translated sentence without sending their content to a service.
+          // Extension UI and existing translation wrappers remain excluded.
+          return matchesKeepSelector && !node.matches(Translator.KISS_IGNORE_SELECTOR)
+            ? pushReplace(node.outerHTML)
+            : "";
         }
 
         if (

@@ -56,9 +56,9 @@ export const OPT_HIGHLIGHT_WORDS_ALL = [
 // 默认的待翻译元素选择器：包含主要的标题、列表、段落及引用块
 export const DEFAULT_SELECTOR =
   "h1, h2, h3, h4, h5, h6, li, p, dd, blockquote, figcaption, label, legend, a, button, summary";
-// 默认被忽略、不参与翻译的选择器：包含按钮、页脚、导航栏、代码块、矢量图以及带“logo”属性的元素
+// Ignore editing controls and code blocks; inline code is preserved in sentence placeholders.
 export const DEFAULT_IGNORE_SELECTOR =
-  "script, style, pre, code, svg, canvas, textarea, input, select, option, [contenteditable='true'], [contenteditable=''], .notranslate, [translate='no']";
+  "script, style, pre, svg, canvas, textarea, input, select, option, [contenteditable='true'], [contenteditable=''], .notranslate, [translate='no']";
 // 默认保留原样、不破坏内部结构的特殊行内元素选择器（如行内代码、公式等）
 export const DEFAULT_KEEP_SELECTOR = `code, cite, math, .math, a:has(code)`;
 

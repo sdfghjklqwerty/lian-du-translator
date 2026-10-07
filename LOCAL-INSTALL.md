@@ -16,7 +16,7 @@
 
 ## 免费服务失败时
 
-原文应继续保留。译文位置出现错误或重试提示时，先检查网络，稍后点重试；必要时在弹窗手动切换 Microsoft，再关闭／开启翻译。不要填写付费密钥来解决试用故障。Google 免费端点和 Edge 免费端点没有本项目能核实的固定额度、无限免费承诺或稳定性保证；403、429、超时和接口变化都可能发生。
+原文应继续保留。译文位置出现错误或重试图标时，鼠标停在图标上可查看原因，也可用 Tab 聚焦；先检查网络，稍后点重试。必要时在弹窗手动切换 Microsoft，再关闭／开启翻译。不要填写付费密钥来解决试用故障。Google 免费端点和 Edge 免费端点没有本项目能核实的固定额度、无限免费承诺或稳定性保证；403、429、超时和接口变化都可能发生。2026-10-07 已用人工 429 验证原文、错误原因和恢复配置后译文重新出现；没有实际耗尽供应商额度。
 
 ## 更新与回退
 
@@ -28,7 +28,7 @@
 - Google 默认请求发往 `translate.googleapis.com/translate_a/single`，待翻译文字在 HTTPS 请求的查询参数中；手动 Microsoft 请求发往 `edge.microsoft.com/translate/translatetext`，文字在请求体中，服务商也可接收网络地址和请求元数据。不会因“不用账户”而成为本地或匿名翻译。
 - 默认无 AI 上下文、无云同步、无自动规则订阅或更新检查。页面原文和译文可缓存在本机浏览器配置中；隐私网页中的可见文字也可能被发送，因此先在公开页面试用。无法从源码证明服务商的留存天数、是否用于训练或第三方端点的再分发许可。
 - `<all_urls>` 和内容脚本允许读取、修改获准网页文字；`webNavigation` 用于识别新页面和 SPA 路由并关闭开关；`storage` 保存配置与缓存；`contextMenus` 提供右键操作；`scripting` 用于注入；`tts`、两项 `declarativeNetRequest` 是继承的高级功能权限，尚未为本机首版裁剪；`clipboardRead` 为可选权限，默认不申请、不自动读剪贴板。默认 CSP 禁用列表为空。
-- 可在扩展“详细信息 → 网站访问权限”限制到指定网站，但需要在这些网站刷新和验证。`chrome://`、商店受限页、图片、Canvas、编辑框、代码段、闭合 Shadow DOM 等不属于已经保证翻译的范围；iframe 与特殊渲染按样本检查。
+- 可在扩展“详细信息 → 网站访问权限”限制到指定网站，但需要在这些网站刷新和验证。本次 Zhang 测试配置的网站访问为“所有网站”，无痕和文件网址访问均关闭；本地验收页使用 HTTP。`chrome://`、商店受限页、图片、Canvas、编辑框、代码块、闭合 Shadow DOM 等不属于已经保证翻译的范围；句子内的文件名等行内代码在译文中原样保留。iframe 与特殊渲染按样本检查。
 - 官方核实入口（2026-10-07）：[Google 隐私政策](https://policies.google.com/privacy?hl=zh-CN)、[Microsoft 隐私声明](https://www.microsoft.com/zh-cn/privacy/privacystatement)、[Chrome 内容脚本](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts)、[导航 API](https://developer.chrome.com/docs/extensions/reference/api/webNavigation)。这些通用资料没有为本插件的免费端点提供 SLA 或固定额度。供公众使用前需另外核实服务条款、额度、分发权限和商店政策。
 
 ## 许可和对应源码
@@ -47,3 +47,7 @@ node scripts/collect-licenses.cjs
 ```
 
 构建结果为 `build/chrome`。维护 AI 需要源码和锁文件、Node/pnpm、允许安装依赖的网络、可操作的测试 Chrome、公开失败样本、脱敏错误信息；不需要用户的密码或付费密钥。首次加载新的本地构建会申请网页访问权限，需由用户在安装时确认。
+
+## 本次交付的验收证据
+
+真实 Chrome 样本、自动测试数量及未验证范围见 `ACCEPTANCE.md`。交付目录的 `VERSION.json` 记录对应源码提交，`SHA256SUMS.txt` 校验源码 ZIP、安装 ZIP 和实际构建文件。源码包解压后能重新安装依赖并构建；已经安装的 `chrome` 文件夹可直接使用，不需要用户运行构建命令。旧的 `chrome-before-*` 文件夹仅用于回退，不包含在最终安装 ZIP 中。

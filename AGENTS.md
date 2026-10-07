@@ -11,4 +11,6 @@
 - 本轮默认只启用免账户 Google / Microsoft，不保留共享预设凭据；其他提供商仅保留可显式配置的停用预设，不自动切换或付费。
 - 依赖许可记录脚本 `node scripts/collect-licenses.cjs` 生成 `legal/`，包括元数据、可取得的随包声明及未修改 webextension-polyfill 源码。清单不是完整法务审查；公众发布前核对实际打包范围与缺少声明文件的包。
 - 安装和维护说明为 LOCAL-INSTALL.md / MAINTENANCE.md；公开人工夹具 `python3 test-pages/server.py` 仅绑定 127.0.0.1:8765，含控制性 429 端点，不输出翻译文字或完整请求路径。运行服务可能需要沙盒联网／端口许可。
-- 2026-10-07 全量模拟回归 202 套件／3562 项通过，Chrome 构建通过。真实免费端点小样本 HTTP 200 不替代 Chrome 内容脚本或 X 验收。当前本地构建加载确认仍待用户回复。
+- 2026-10-07 最终浏览器修复构建通过；全量模拟回归 202 套件／3564 项通过。用户已授权安装和网页访问；Chrome Zhang 配置的独立 ID 为 `hknlaoeokajglejfmldmgpocjplfhbod`。刷新或重载后的页面须先核对真实开启状态再验收，避免缓存译文误判故障请求。
+- `src/common.js` 装配运行配置，`src/libs/translatorManager.js` 管页面会话，`src/libs/translator.js` 管扫描、译文与错误，`src/apis/` 管服务；`test-pages/` 为公开夹具。修改后把构建复制到已加载目录，再通过 Chrome 扩展管理页重载并刷新样本页。
+- 行内代码包括 `.notranslate`／`translate=no` 文件名须在整句译文中原样保留；代码块与编辑框仍跳过。错误浮层可能包含查询文本，提交复现记录时只保留状态、服务名、公开样本与已脱敏原因。

@@ -1,4 +1,4 @@
-import { OPT_HIGHLIGHT_WORDS_DISABLE, DEFAULT_SELECTOR, DEFAULT_IGNORE_SELECTOR } from "./config";
+import { OPT_HIGHLIGHT_WORDS_DISABLE, DEFAULT_SELECTOR, DEFAULT_IGNORE_SELECTOR, DEFAULT_KEEP_SELECTOR } from "./config";
 import {
   getFabWithDefault,
   getSettingWithDefault,
@@ -15,6 +15,7 @@ import { runSubtitle } from "./subtitle/subtitle";
 import { logger } from "./libs/log";
 import { injectInlineJs } from "./libs/injector";
 import TranslatorManager from "./libs/translatorManager";
+import { installReadingLayout } from "./libs/readingLayout";
 
 /**
  * 油猴脚本特权桥接设置。
@@ -317,9 +318,11 @@ export async function run(isUserscript = false) {
         autoScan: "true",
         rootsSelector: "body",
         ignoreSelector: DEFAULT_IGNORE_SELECTOR,
+        keepSelector: [rule.keepSelector, DEFAULT_KEEP_SELECTOR].filter(Boolean).join(", "),
       };
     }
     const favWords = await getFavWords(rule);
+    installReadingLayout(setting);
     const fabConfig = { ...(await getFabWithDefault()) };
     // 名单命中时反转全局显隐：全局显示为黑名单，全局隐藏为白名单。
     if (

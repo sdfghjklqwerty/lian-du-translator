@@ -21,6 +21,8 @@ const {
   OPT_DICT_YOUDAO,
 } = require("../config");
 const {
+  DEFAULT_IGNORE_SELECTOR,
+  DEFAULT_KEEP_SELECTOR,
   OPT_HIGHLIGHT_WORDS_AFTERTRANS,
   OPT_HIGHLIGHT_WORDS_BEFORETRANS,
 } = require("../config/rules");
@@ -364,6 +366,25 @@ describe("Translator rule styles", () => {
       removeEventListener: jest.fn(),
       dispatchEvent: jest.fn(),
     }));
+  });
+
+  test.each(["", ' class="notranslate" translate="no"'])("retains inline filenames with attributes %s while excluding code blocks", async (attributes) => {
+    document.body.innerHTML = `<main id="root"><p id="sentence">Create a file named <code${attributes}>manifest.json</code> and save it.</p><pre><code>const untouched = true;</code></pre></main>`;
+    apiTranslate.mockImplementation(({ text }) => Promise.resolve({
+      trText: `译文 ${text}`,
+      isSame: false,
+    }));
+    createTranslator({
+      hasRichText: "true",
+      ignoreSelector: DEFAULT_IGNORE_SELECTOR,
+      keepSelector: DEFAULT_KEEP_SELECTOR,
+    });
+    await flushAsync();
+    const translation = document.querySelector('#sentence .kiss-translator-inner');
+    expect(translation.querySelector('code').textContent).toBe('manifest.json');
+    expect(document.querySelector('pre').textContent).toBe('const untouched = true;');
+    expect(document.querySelector('pre .kiss-translator-wrapper')).toBeNull();
+    expect(apiTranslate.mock.calls.some(([args]) => args.text.includes('untouched'))).toBe(false);
   });
 
   afterEach(() => {

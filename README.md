@@ -7,6 +7,7 @@
 - [本机安装、免费条件与隐私](LOCAL-INSTALL.md)
 - [修改说明与 GPLv3 分发义务](FORK-NOTICE.md) · [许可证](LICENSE)
 - [AI 分阶段任务与维护／回退](MAINTENANCE.md)
+- [真实 Chrome 验收、回归与未验证范围](ACCEPTANCE.md)
 - [已安装依赖的许可证据](legal/THIRD-PARTY-NOTICES.md)
 
 `npm run build:chrome` 输出 `build/chrome`，在 Chrome 的 `chrome://extensions` 开启开发者模式后加载该目录。此版没有通过商店发布；实际网站覆盖范围和测试证据见外层项目的 `试用记录.md`。模拟测试通过不能证明 X 会话、所有语言或免费端点的长期可用性。供公众安装的服务条款、权限裁剪和发布审核另行安排。
