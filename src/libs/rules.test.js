@@ -2,7 +2,7 @@ import { checkRules, matchRule, saveRule } from "./rules";
 import { getDisabledSubRules, getRulesWithDefault, saveEdit } from "./storage";
 import { loadOrFetchSubRules } from "./subRules";
 import { GLOBLA_RULE } from "../config/rules";
-import { OPT_TRANS_MICROSOFT, OPT_TRANS_TENCENT } from "../config/api";
+import { OPT_TRANS_GOOGLE, OPT_TRANS_MICROSOFT, OPT_TRANS_TENCENT } from "../config/api";
 import { DEFAULT_API_SETTING } from "../config";
 
 jest.mock("./storage", () => ({
@@ -41,8 +41,8 @@ jest.mock("./detect", () => ({
   tryDetectLang: jest.fn(),
 }));
 
-test("uses Microsoft as the default webpage translator", () => {
-  expect(GLOBLA_RULE.apiSlug).toBe(OPT_TRANS_MICROSOFT);
+test("uses the no-key Google service as the default webpage translator", () => {
+  expect(GLOBLA_RULE.apiSlug).toBe(OPT_TRANS_GOOGLE);
 });
 
 test("keeps an explicitly stored Tencent global rule", async () => {

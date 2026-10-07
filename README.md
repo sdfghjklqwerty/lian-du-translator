@@ -1,4 +1,19 @@
-# KISS Translator 简约翻译
+# 连读翻译（开发版）2.1.1
+
+本仓库是 [KISS Translator](https://github.com/fishjar/kiss-translator) 的 GNU GPLv3 修改版，以一次手动开启后的连续双语阅读为目标，Chrome 为首版验证平台。第一版只处理网页文字，默认免账户 Google，保留原文并在下面附上简体译文，页面刷新或路由变化后重新手动开启。
+
+基线：上游 2.1.0，提交 `a8c5a6fbe9af2379640a780fea97472e1dadeaa9`，核验 2026-10-07。原作者署名和许可继续保留。名称与安装身份区别于官方版本，内部 DOM 命名为了兼容上游规则保留；不要同时开启多个翻译扩展。
+
+- [本机安装、免费条件与隐私](LOCAL-INSTALL.md)
+- [修改说明与 GPLv3 分发义务](FORK-NOTICE.md) · [许可证](LICENSE)
+- [AI 分阶段任务与维护／回退](MAINTENANCE.md)
+- [已安装依赖的许可证据](legal/THIRD-PARTY-NOTICES.md)
+
+`npm run build:chrome` 输出 `build/chrome`，在 Chrome 的 `chrome://extensions` 开启开发者模式后加载该目录。此版没有通过商店发布；实际网站覆盖范围和测试证据见外层项目的 `试用记录.md`。模拟测试通过不能证明 X 会话、所有语言或免费端点的长期可用性。供公众安装的服务条款、权限裁剪和发布审核另行安排。
+
+下面保留上游的介绍、功能和参考入口，描述的是上游能力；其中字幕、输入翻译、付费服务等不属于本修改版首轮开启的功能。
+
+# KISS Translator 简约翻译（上游资料）
 
 [English](README.en.md) | [中文](README.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Continuous reading acceptance sample</title>
+<style>
+body{font:18px/1.6 system-ui;max-width:850px;margin:32px auto;padding:0 20px;background:#fafafa;color:#202124}
+nav{display:flex;gap:24px}article{padding:20px;margin:20px 0;background:white;border:1px solid #ddd;border-radius:8px}
+.controls{position:sticky;top:0;background:#edf5ff;padding:12px;z-index:10}button{font:inherit;margin:4px;padding:6px 10px}pre{white-space:pre-wrap}
+</style>
+<nav><a href="#later">Home</a><a href="#later">More</a><button id="short-button">Next</button></nav>
+<h1 id="title">Continuous reading without repeated clicks</h1>
+<div class="controls notranslate" translate="no">
+<strong>浏览器验收控制（这些中文控件不翻译）</strong><br>
+<button id="add">新增英文帖子</button><button id="expand">展开英文回复</button>
+<button id="edit">编辑原段落</button><button id="reinsert">移除并重新插入</button>
+<button id="route">跳转 SPA 新页面</button><button id="hashroute">跳转 hash 新页面</button>
+<a href="#later">同页锚点</a><button id="check">检查译文容器</button>
+<pre id="diagnostics">尚未检查。译文来自扩展时才算浏览器测试。</pre>
+</div>
+<main>
+<article id="original"><h2>A public test article</h2><p id="edit-target">Keep the original text visible. New replies should be translated after one manual activation.</p></article>
+<article><p id="chinese">这是一段纯中文，不应该出现重复的中文译文。</p><p id="mixed">今天测试 Chrome extension，please keep the original sentence and translate the English content.</p><p id="japanese">新しい返信を読みながら、元の文章も確認できます。</p></article>
+<div id="feed"></div>
+<article id="replies" hidden><h2>Replies</h2><p id="reply-one">This reply was hidden until you expanded the conversation. Do not click translate again.</p><p id="reply-two">The translation must not change the author's original words.</p></article>
+<article id="replace"><p id="reinsert-target">Removing and reinserting a post should not create duplicate translations.</p></article>
+<div style="height:900px" aria-hidden="true"></div>
+<article id="later"><h2>A later section</h2><p>Scrolling should continue the bilingual reading experience without another click.</p></article>
+<textarea placeholder="Private editing text must remain unchanged"></textarea>
+<pre><code>Code blocks are excluded from this first version.</code></pre>
+</main>
+<script>
+let nextPost=0;
+document.querySelector('#add').onclick=()=>{const article=document.createElement('article');article.id='post-'+(++nextPost);const p=document.createElement('p');p.textContent=`New post ${nextPost}: The browser should translate newly loaded text automatically while this page is enabled.`;article.append(p);document.querySelector('#feed').append(article);article.scrollIntoView({block:'center'});};
+document.querySelector('#expand').onclick=()=>{document.querySelector('#replies').hidden=false;document.querySelector('#replies').scrollIntoView({block:'center'});};
+document.querySelector('#edit').onclick=()=>{document.querySelector('#edit-target').textContent='The edited sentence is different. Its new translation must correspond to this new original.';document.querySelector('#original').scrollIntoView({block:'center'});};
+document.querySelector('#reinsert').onclick=()=>{const article=document.querySelector('#replace');article.remove();document.querySelector('#feed').append(article);article.scrollIntoView({block:'center'});};
+const newPage=()=>{document.querySelector('#title').textContent='A new page requires a new manual activation';document.querySelector('#feed').replaceChildren();const p=document.createElement('p');p.id='new-route-text';p.textContent='This is a new page, so it must stay untranslated until you enable translation again.';document.querySelector('#feed').append(p);window.scrollTo(0,0);};
+document.querySelector('#route').onclick=()=>{history.pushState({},'', '?page='+Date.now());newPage();};
+document.querySelector('#hashroute').onclick=()=>{location.hash='/next-'+Date.now();newPage();};
+document.querySelector('#check').onclick=()=>{const rows=['#edit-target','#chinese','#mixed','#japanese','#reply-one','#reply-two','#reinsert-target','#title','#new-route-text',...Array.from({length:nextPost},(_,i)=>'#post-'+(i+1)+' p')].map(selector=>{const el=document.querySelector(selector);return el?selector+': '+el.querySelectorAll('.kiss-translator-wrapper').length+' 个译文容器':'未出现 '+selector;});document.querySelector('#diagnostics').textContent=rows.join('\n');};
+</script>
+</html>

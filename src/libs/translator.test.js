@@ -5382,7 +5382,7 @@ describe("Translator rule styles", () => {
     document.elementFromPoint = () => btn;
 
     createTranslator(
-      { transOpen: "false", rootsSelector: "body" },
+      { transOpen: "false", rootsSelector: "body", ignoreSelector: "button" },
       {
         preInit: true,
         mouseHoverSetting: {

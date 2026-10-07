@@ -1,4 +1,4 @@
-import { OPT_HIGHLIGHT_WORDS_DISABLE } from "./config";
+import { OPT_HIGHLIGHT_WORDS_DISABLE, DEFAULT_SELECTOR, DEFAULT_IGNORE_SELECTOR } from "./config";
 import {
   getFabWithDefault,
   getSettingWithDefault,
@@ -309,7 +309,16 @@ export async function run(isUserscript = false) {
     }
 
     // 7. 匹配当前网页专用的规则 (三级规则合并：个人 > 订阅 > 内置全局)
-    const rule = await matchRule(href, setting);
+    let rule = await matchRule(href, setting);
+    if (setting.readingWholePage) {
+      rule = {
+        ...rule,
+        selector: [rule.selector, DEFAULT_SELECTOR].filter(Boolean).join(", "),
+        autoScan: "true",
+        rootsSelector: "body",
+        ignoreSelector: DEFAULT_IGNORE_SELECTOR,
+      };
+    }
     const favWords = await getFavWords(rule);
     const fabConfig = { ...(await getFabWithDefault()) };
     // 名单命中时反转全局显隐：全局显示为黑名单，全局隐藏为白名单。
@@ -348,7 +357,9 @@ export async function run(isUserscript = false) {
     }
 
     // 10. 启动视频字幕翻译子模块 (仅在顶级 frame 下运行)
-    runSubtitle({ href, setting: runtimeSetting, rule, isUserscript });
+    if (!setting.manualPageOnly) {
+      runSubtitle({ href, setting: runtimeSetting, rule, isUserscript });
+    }
 
     // 11. 在油猴环境下，每次进入顶级页面时尝试触发一次订阅规则的自动同步检查 (每日一次)
     if (isUserscript) {

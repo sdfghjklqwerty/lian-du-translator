@@ -1,9 +1,9 @@
 {
   "app_name": {
-    "message": "简约翻译"
+    "message": "连读翻译（开发版）"
   },
   "app_description": {
-    "message": "一个简约的双语对照翻译扩展，支持网页、划词、视频字幕翻译等功能，支持多种翻译服务及AI翻译接口，拥有丰富灵活的自定义选项。"
+    "message": "手动开启当前页面的简体中文双语翻译，滚动加载后继续翻译。基于 KISS Translator。"
   },
   "translate_selection": {
     "message": "翻译 \"%s\""

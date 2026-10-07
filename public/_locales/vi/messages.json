@@ -1,9 +1,9 @@
 {
   "app_name": {
-    "message": "KISS Translator"
+    "message": "LianDu Translate (Development)"
   },
   "app_description": {
-    "message": "Một tiện ích mở rộng dịch song ngữ tối giản, hỗ trợ dịch trang web, vùng chọn và phụ đề video."
+    "message": "Manual bilingual reading in Simplified Chinese with dynamic content translation. Based on KISS Translator."
   },
   "translate_selection": {
     "message": "Dịch \"%s\""

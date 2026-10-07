@@ -5,12 +5,19 @@ import {
   DEFAULT_SUBTITLE_SETTING,
   DEFAULT_TRANBOX_SETTING,
 } from "./setting";
-import { DEFAULT_API_LIST, OPT_TRANS_MICROSOFT } from "./api";
+import { DEFAULT_API_LIST, OPT_TRANS_GOOGLE, OPT_TRANS_MICROSOFT } from "./api";
 import { GLOBAL_KEY } from "./rules";
 
 describe("translation box defaults", () => {
-  test("translates language variants by default", () => {
-    expect(DEFAULT_SETTING.translateVariants).toBe(true);
+  test("offers only the two no-account services until explicitly configured", () => {
+    const enabled = DEFAULT_API_LIST.filter((api) => !api.isDisabled);
+    expect(enabled.map((api) => api.apiType).sort()).toEqual(
+      [OPT_TRANS_GOOGLE, OPT_TRANS_MICROSOFT].sort()
+    );
+    enabled.forEach((api) => expect(api.key).toBeFalsy());
+  });
+  test("preserves Chinese language variants by default", () => {
+    expect(DEFAULT_SETTING.translateVariants).toBe(false);
   });
 
   test("does not convert LaTeX in translations by default", () => {

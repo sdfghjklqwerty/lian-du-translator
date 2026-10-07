@@ -39,6 +39,7 @@ import {
   MSG_SHA256,
   MSG_GET_FRAME_ID,
   MSG_VALIDATE_DOCUMENT,
+  MSG_PAGE_NAVIGATED,
 } from "./config";
 import {
   getSettingWithDefault,
@@ -61,6 +62,20 @@ import { isCurrentPopupDocument } from "./libs/popupDocument";
 
 globalThis.__KISS_CONTEXT__ = "background";
 installStorageCoordinator();
+
+// Chrome reports pushState/replaceState navigation even when X keeps the
+// same document. Deliver to the exact frame; the top frame stops its children.
+const notifyReadingNavigation = (details) => {
+  browser.tabs
+    .sendMessage(
+      details.tabId,
+      { action: MSG_PAGE_NAVIGATED, args: { url: details.url } },
+      { frameId: details.frameId }
+    )
+    .catch(() => {}); // Restricted pages or a newly replaced document have no listener.
+};
+browser.webNavigation?.onHistoryStateUpdated?.addListener(notifyReadingNavigation);
+browser.webNavigation?.onReferenceFragmentUpdated?.addListener(notifyReadingNavigation);
 
 let openingOptionsPage = null;
 

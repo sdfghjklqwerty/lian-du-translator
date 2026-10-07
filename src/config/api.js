@@ -1579,7 +1579,7 @@ const defaultApiOpts = {
   [OPT_TRANS_GOOGLE_2]: {
     ...defaultApi,
     url: "https://translate-pa.googleapis.com/v1/translateHtml",
-    key: "AIzaSyATBXajvzQLTDHEQbcpq0Ihe0vWDHmO520",
+    key: "", // Requires explicit user configuration; no shared preset credential.
     useBatchFetch: true,
     placetag: "a",
     placetagFormat: "attribute",
@@ -1766,8 +1766,6 @@ const defaultApiOpts = {
 const DEFAULT_ENABLED_API_TYPES = new Set([
   OPT_TRANS_MICROSOFT,
   OPT_TRANS_GOOGLE,
-  OPT_TRANS_GOOGLE_2,
-  OPT_TRANS_BUILTINAI,
 ]);
 
 // Built-in presets remain available for explicit activation in settings.

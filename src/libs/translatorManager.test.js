@@ -357,6 +357,64 @@ function sendSettingChange(setting, areaName = "local") {
 }
 
 describe("TranslatorManager SPA lifecycle", () => {
+  test("manual reading starts off even when a saved site rule requests automatic translation", () => {
+    const manager = createManager({ setting: { manualPageOnly: true } });
+    manager.start();
+    expect(manager._translator.rule.transOpen).toBe("false");
+    manager._translator.rule.transOpen = "true";
+    manager.restart("same-page-body-replacement");
+    expect(manager._translator.rule.transOpen).toBe("true");
+  });
+
+  test("X-style pathname navigation stops the session and its frames only once", () => {
+    const originalUrl = window.location.href;
+    const { MSG_PAGE_NAVIGATED } = require("../config/msg");
+    try {
+      const manager = createManager({ setting: { manualPageOnly: true } });
+      manager.start();
+      manager._translator.rule.transOpen = "true";
+      window.history.pushState({}, "", "/user/status/123");
+      const message = { action: MSG_PAGE_NAVIGATED, args: { url: window.location.href } };
+      sendRuntimeMessage(message);
+      sendRuntimeMessage(message);
+      expect(manager._translator.rule.transOpen).toBe("false");
+      expect(manager._translator.disable).toHaveBeenCalledTimes(1);
+      expect(sendIframeMsg).toHaveBeenCalledWith("trans-toggle", { enabled: false });
+      manager.restart("new-page-body-replacement");
+      expect(manager._translator.rule.transOpen).toBe("false");
+    } finally {
+      window.history.replaceState({}, "", originalUrl);
+    }
+  });
+
+  test("article anchors and a stale navigation event preserve current-page reading", () => {
+    const originalUrl = window.location.href;
+    const { MSG_PAGE_NAVIGATED } = require("../config/msg");
+    try {
+      const manager = createManager({ setting: { manualPageOnly: true } });
+      manager.start();
+      manager._translator.rule.transOpen = "true";
+      window.history.pushState({}, "", `${originalUrl.split("#")[0]}#section-two`);
+      sendRuntimeMessage({ action: MSG_PAGE_NAVIGATED, args: { url: window.location.href } });
+      sendRuntimeMessage({ action: MSG_PAGE_NAVIGATED, args: { url: `${window.location.origin}/old-page` } });
+      expect(manager._translator.disable).not.toHaveBeenCalled();
+      expect(manager._translator.rule.transOpen).toBe("true");
+    } finally {
+      window.history.replaceState({}, "", originalUrl);
+    }
+  });
+
+  test("returning from the browser back-forward cache requires another manual start", () => {
+    const manager = createManager({ setting: { manualPageOnly: true } });
+    manager.start();
+    manager._translator.rule.transOpen = "true";
+    const event = new Event("pageshow");
+    Object.defineProperty(event, "persisted", { value: true });
+    window.dispatchEvent(event);
+    expect(manager._translator.disable).toHaveBeenCalledTimes(1);
+    expect(manager._translator.rule.transOpen).toBe("false");
+  });
+
   beforeEach(() => {
     jest.useFakeTimers();
     document.documentElement.innerHTML = "<head></head><body></body>";

@@ -3,7 +3,7 @@
  * @description 网页翻译规则相关的配置参数。定义匹配选择器、翻译时机、段落切分、生词高亮策略以及兜底和内置的定制网站翻译规则。
  */
 
-import { OPT_TRANS_MICROSOFT } from "./api";
+import { OPT_TRANS_GOOGLE } from "./api";
 import { OPT_STYLE_NONE } from "./styles";
 
 // --- 规则模式关键字 ---
@@ -55,10 +55,10 @@ export const OPT_HIGHLIGHT_WORDS_ALL = [
 
 // 默认的待翻译元素选择器：包含主要的标题、列表、段落及引用块
 export const DEFAULT_SELECTOR =
-  "h1, h2, h3, h4, h5, h6, li, p, dd, blockquote, figcaption, label, legend";
+  "h1, h2, h3, h4, h5, h6, li, p, dd, blockquote, figcaption, label, legend, a, button, summary";
 // 默认被忽略、不参与翻译的选择器：包含按钮、页脚、导航栏、代码块、矢量图以及带“logo”属性的元素
 export const DEFAULT_IGNORE_SELECTOR =
-  "button, footer, pre, mark, nav, svg, img[src*='.svg'], [class*='logo'] svg, [id*='logo'] svg";
+  "script, style, pre, code, svg, canvas, textarea, input, select, option, [contenteditable='true'], [contenteditable=''], .notranslate, [translate='no']";
 // 默认保留原样、不破坏内部结构的特殊行内元素选择器（如行内代码、公式等）
 export const DEFAULT_KEEP_SELECTOR = `code, cite, math, .math, a:has(code)`;
 
@@ -124,7 +124,7 @@ export const GLOBLA_RULE = {
   blockSelector: "",
   terms: "",
   aiTerms: "",
-  apiSlug: OPT_TRANS_MICROSOFT, // 默认采用微软翻译
+  apiSlug: OPT_TRANS_GOOGLE, // 连读翻译默认免费 Google；可手动切换 Microsoft
   fromLang: "auto", // 默认自动识别原文语言
   toLang: "zh-CN", // 默认翻译为简体中文
   textStyle: OPT_STYLE_NONE, // 默认译文不加额外线条/高亮背景

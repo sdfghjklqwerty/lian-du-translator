@@ -45,6 +45,8 @@ import {
 import { logger } from "./log";
 import { getPopupDocumentIdentity } from "./popupDocument";
 import { isSameStorageValue } from "./storageEquality";
+import { getReadingPageIdentity } from "./pageSession";
+import { MSG_PAGE_NAVIGATED } from "../config/msg";
 import { MSG_GET_FRAME_ID, MSG_VALIDATE_DOCUMENT } from "../config/msg";
 
 /**
@@ -63,6 +65,7 @@ export default class TranslatorManager {
   #menuCommandIds = [];
   #clearTouchListeners = [];
   #isActive = false;
+  #readingPageIdentity = "";
 
   // 初始配置快照。restart 会用运行期状态刷新这些快照，再重建子模块。
   #setting;
@@ -125,6 +128,8 @@ export default class TranslatorManager {
   }) {
     this.#setting = this.#cloneConfig(setting);
     this.#rule = this.#cloneConfig(rule);
+    this.#readingPageIdentity = getReadingPageIdentity(window.location.href);
+    if (setting.manualPageOnly) this.#rule.transOpen = "false";
     this.#fabConfig = this.#cloneConfig(fabConfig);
     this.#favWords = this.#cloneConfig(favWords);
     this.#isIframe = isIframe;
@@ -532,7 +537,20 @@ export default class TranslatorManager {
    */
   #handlePageRestore(event) {
     if (event.type === "pageshow" && event.persisted !== true) return;
+    if (this.#setting.manualPageOnly && event.persisted === true) {
+      this.#endReadingSession();
+      this.#readingPageIdentity = getReadingPageIdentity(window.location.href);
+    }
     this.#scheduleSpaRefresh("rescan", event.type);
+  }
+
+  #endReadingSession() {
+    this._translator?.disable();
+    if (this._translator) this._translator.rule.transOpen = "false";
+    this.#rule.transOpen = "false";
+    this.#touchMode = this._translator?.setTouchMode?.("off") || "off";
+    if (!this.#isIframe) sendIframeMsg(MSG_TRANS_TOGGLE, { enabled: false });
+    this.#notifyTouchState();
   }
 
   /**
@@ -944,6 +962,20 @@ export default class TranslatorManager {
     fromExt = false
   ) {
     if (!action) return;
+    if (action === MSG_PAGE_NAVIGATED) {
+      // Background navigation events, not website CustomEvents, end a session.
+      if (fromExt && this.#setting.manualPageOnly && args?.url) {
+        const next = getReadingPageIdentity(args.url);
+        if (
+          next === getReadingPageIdentity(window.location.href) &&
+          next !== this.#readingPageIdentity
+        ) {
+          this.#readingPageIdentity = next;
+          this.#endReadingSession();
+        }
+      }
+      return this.#getRuntimeResponse();
+    }
     if (
       expectedDocumentToken &&
       expectedDocumentToken !== this.#documentToken

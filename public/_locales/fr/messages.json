@@ -1,9 +1,9 @@
 {
   "app_name": {
-    "message": "KISS Traducteur"
+    "message": "LianDu Translate (Development)"
   },
   "app_description": {
-    "message": "Une extension de traduction bilingue minimaliste prenant en charge la traduction de pages web, de texte sélectionné et de sous-titres vidéo."
+    "message": "Manual bilingual reading in Simplified Chinese with dynamic content translation. Based on KISS Translator."
   },
   "translate_selection": {
     "message": "Traduire \"%s\""

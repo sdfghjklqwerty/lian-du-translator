@@ -33,9 +33,9 @@ export const DEFAULT_SHORTCUTS = {
   [OPT_SHORTCUT_SETTING]: ["AltLeft", "KeyO"], // Alt + O 打开设置
 };
 
-export const TRANS_MIN_LENGTH = 2; // 触发网页翻译的最小文本字符数 (过短字符如单个字母不予处理)
+export const TRANS_MIN_LENGTH = 1; // 包括菜单等短文字
 export const TRANS_MAX_LENGTH = 100000; // 单次翻译的最大字符数
-export const TRANS_NEWLINE_LENGTH = 20; // 文本被认定为需要单独换行的长度限制
+export const TRANS_NEWLINE_LENGTH = 0; // 所有译文从原文下面开始
 
 // --- 工具栏弹窗默认界面 ---
 export const OPT_POPUP_DEFAULT_VIEW_PAGE = "page"; // 默认显示网页翻译界面
@@ -84,7 +84,7 @@ export const OPT_INPUT_DOT_ALWAYS = "always"; // 始终显示在输入框边缘
 export const OPT_INPUT_TRANS_SIGNS = ["/", "//", "\\", "\\\\", ">", ">>"]; // 支持的触发翻译符号
 export const DEFAULT_INPUT_SHORTCUT = ["AltLeft", "KeyI"]; // 触发输入框翻译的键盘快捷键
 export const DEFAULT_INPUT_RULE = {
-  transOpen: true, // 是否开启输入框翻译功能
+  transOpen: false, // 第一版仅阅读网页文字，输入翻译默认关闭
   blacklist: "", // 禁用输入框翻译的域名列表
   apiSlug: OPT_TRANS_MICROSOFT, // 默认使用的翻译服务 API 标识
   fromLang: "auto", // 默认自动检测输入源语言
@@ -130,7 +130,7 @@ export const OPT_SKIPLANGS_SELECTION = [
 ];
 
 export const DEFAULT_TRANBOX_SETTING = {
-  transOpen: true, // 是否启用划词翻译功能
+  transOpen: false, // 第一版通过一次全页开关阅读，划词默认关闭
   blacklist: "", // 划词翻译禁用的域名列表
   apiSlugs: [OPT_TRANS_MICROSOFT], // 启用的翻译 API (支持多选)
   singleWordNoTrans: false, // 划词为单个单词时是否仅查询词典，不请求整句翻译服务
@@ -211,7 +211,7 @@ export const DEFAULT_SUBTITLE_SETTING = {
 export const DEFAULT_SUBRULES_LIST = [
   {
     url: process.env.REACT_APP_RULESURL, // 默认官方稳定版规则库
-    selected: true,
+    selected: false,
   },
   {
     url: process.env.REACT_APP_RULESURL_ON, // 默认全部翻译规则库
@@ -261,11 +261,13 @@ export const DEFAULT_MOUSE_HOVER_SETTING = {
 
 // --- 全局默认设置对象，存储于 local storage ---
 export const DEFAULT_SETTING = {
+  manualPageOnly: true,
+  readingWholePage: true,
   version: CURRENT_SETTINGS_VERSION,
   // 输入框拉伸手柄样式（14 选 1，见 StylesSetting 页说明）
   textareaGripStyle: "concentric-smooth",
   darkMode: "auto", // 主题外观模式 ("light" 浅色, "dark" 深色, "auto" 跟随浏览器系统)
-  uiLang: "en", // 插件设置面板界面的显示语言
+  uiLang: "zh", // 连读翻译默认中文界面
   // fetchLimit: DEFAULT_FETCH_LIMIT, // 最大任务数量(移至rule，作废)
   // fetchInterval: DEFAULT_FETCH_INTERVAL, // 任务间隔时间(移至rule，作废)
   minLength: TRANS_MIN_LENGTH, // 整页翻译的段落最小有效长度限制
@@ -274,9 +276,9 @@ export const DEFAULT_SETTING = {
   httpTimeout: DEFAULT_HTTP_TIMEOUT, // 接口请求超时时间
   clearCache: false, // 每次浏览器重启时，是否自动清空翻译结果的本地网络缓存
   autoTranslateClipboard: false, // 打开文本翻译面板或重新聚焦独立窗口时，是否自动翻译剪贴板文本
-  checkUpdate: true, // 打开设置页面时是否自动检查是否有新版本
+  checkUpdate: false, // 修改版更新由本项目管理
   popupDefaultView: OPT_POPUP_DEFAULT_VIEW_PAGE, // 工具栏弹窗打开时默认显示的界面
-  injectRules: true, // 页面加载时是否自动匹配并注入云端订阅的翻译规则
+  injectRules: false, // 第一版使用随源码提供的规则，避免远程规则改变手动策略
   fabClickAction: 0, // 工具栏悬浮球按钮双击或单击的默认响应行为 (如开启/关闭翻译)
   // injectWebfix: true, // 是否注入修复补丁(作废)
   // detectRemote: false, // 是否使用远程语言检测 （从rule移回）
@@ -300,7 +302,7 @@ export const DEFAULT_SETTING = {
   orilist: DEFAULT_ORILIST.join(",\n"), // 需要改写或删除 Cross-Origin HTTP 请求头的网址列表
   // disableLangs: [], // 不翻译的语言(移至rule，作废)
   skipLangs: [], // 忽略翻译的语种代码列表 (即如果网页检测到是这些语言，则不触发自动整页翻译)
-  translateVariants: true, // 是否继续翻译同一语言的不同变体（如简体中文与繁体中文）
+  translateVariants: false, // 中文及其变体保留原文
   parseLatex: false, // 是否将译文中的行内 LaTeX 公式转换为可读的 Unicode 文本
   transInterval: 100, // 两次段落翻译执行之间的等待延迟
   langDetector: "-", // 主动检测源语言的外部 API 服务选择 ("-" 表示由翻译 API 本身自动判定)

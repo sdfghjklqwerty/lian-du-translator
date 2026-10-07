@@ -190,18 +190,18 @@ describe("settings storage migration", () => {
       JSON.stringify({ version: SETTINGS_VERSION_V3, uiLang: "zh" })
     );
     await expect(getSettingWithDefault()).resolves.toMatchObject({
-      translateVariants: true,
+      translateVariants: false,
     });
 
     window.localStorage.setItem(
       STOKEY_SETTING,
       JSON.stringify({
         version: SETTINGS_VERSION_V3,
-        translateVariants: false,
+        translateVariants: true,
       })
     );
     await expect(getSettingWithDefault()).resolves.toMatchObject({
-      translateVariants: false,
+      translateVariants: true,
     });
   });
 
@@ -293,7 +293,7 @@ describe("settings storage migration", () => {
     });
   });
 
-  test("enables only the initial four services for a fresh installation", async () => {
+  test("enables only the two no-account services for a fresh installation", async () => {
     const setting = await getSettingWithDefault();
 
     expect(setting.transApis).toHaveLength(DEFAULT_API_LIST.length);
@@ -302,9 +302,7 @@ describe("settings storage migration", () => {
         .filter((api) => !api.isDisabled)
         .map((api) => api.apiType)
     ).toEqual([
-      OPT_TRANS_BUILTINAI,
       OPT_TRANS_GOOGLE,
-      OPT_TRANS_GOOGLE_2,
       OPT_TRANS_MICROSOFT,
     ]);
   });
